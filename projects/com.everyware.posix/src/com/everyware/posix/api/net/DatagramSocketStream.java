@@ -231,6 +231,42 @@ public class DatagramSocketStream extends NetworkStream {
 	}
 
 	@Override
+	public long sendto(PosixPointer message, long length, int flags, PosixPointer dest_addr, int dest_len)
+			throws PosixException {
+		if(message == null) {
+			throw new PosixException(Errno.EFAULT);
+		}
+
+		if(dest_addr == null) {
+			return send(message, length, flags);
+		}
+
+		ByteBuffer buf;
+		if(message.hasMemory((int) length)) {
+			buf = ByteBuffer.wrap(message.getMemory(), message.getOffset(), (int) length);
+		} else {
+			byte[] b = new byte[(int) length];
+			PosixPointer p = message;
+			for(int i = 0; i < length; i++) {
+				b[i] = p.getI8();
+				p = p.add(1);
+			}
+			buf = ByteBuffer.wrap(b, 0, (int) length);
+		}
+
+		SocketAddress target = getSocketAddress(dest_addr);
+		try {
+			return socket.send(buf, target);
+		} catch(NotYetConnectedException e) {
+			throw new PosixException(Errno.ENOTCONN);
+		} catch(ClosedChannelException e) {
+			throw new PosixException(Errno.EBADF);
+		} catch(IOException e) {
+			throw new PosixException(Errno.EIO);
+		}
+	}
+
+	@Override
 	public RecvResult recvfrom(PosixPointer buffer, long length, int flags) throws PosixException {
 		// TODO: use the flags
 		ByteBuffer buf = ByteBuffer.allocate((int) length);

@@ -831,6 +831,12 @@ public class Posix {
 		return 0;
 	}
 
+	// TODO: implement
+	// public int select(int nfds, FdSet readfds, FdSet writefds, FdSet errorfds, Timeval timeout) throws
+	// PosixException {
+	// return -1;
+	// }
+
 	public int poll(Pollfd[] pfds, int nfds, int timeout) throws PosixException {
 		if(strace) {
 			log.log(Levels.INFO, () -> String.format("poll(..., %s, %s)", nfds, timeout));
@@ -1092,6 +1098,24 @@ public class Posix {
 		} else {
 			NetworkStream nstream = (NetworkStream) stream;
 			return nstream.sendmmsg(msgvec, vlen, flags);
+		}
+	}
+
+	public long sendto(int sock, PosixPointer message, long length, int flags, PosixPointer dest_addr, int dest_len)
+			throws PosixException {
+		if(strace) {
+			log.log(Levels.INFO,
+					() -> String.format("sendto(%s, %s, %s, %s, %s, %s)", sock, message, length,
+							Socket.sendrecvFlags(flags), Sockaddr.get(dest_addr, dest_len),
+							dest_len));
+		}
+		assertI64(length);
+		Stream stream = fds.getStream(sock);
+		if(!(stream instanceof NetworkStream)) {
+			throw new PosixException(Errno.ENOTSOCK);
+		} else {
+			NetworkStream nstream = (NetworkStream) stream;
+			return nstream.sendto(message, length, flags, dest_addr, dest_len);
 		}
 	}
 

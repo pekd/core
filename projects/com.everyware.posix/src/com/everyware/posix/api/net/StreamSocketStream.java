@@ -222,6 +222,20 @@ public class StreamSocketStream extends NetworkStream {
 	}
 
 	@Override
+	public long sendto(PosixPointer message, long length, int flags, PosixPointer dest_addr, int dest_len)
+			throws PosixException {
+		if(message == null) {
+			throw new PosixException(Errno.EFAULT);
+		}
+
+		if(dest_addr != null) {
+			throw new PosixException(Errno.EISCONN);
+		}
+
+		return send(message, length, flags);
+	}
+
+	@Override
 	public RecvResult recvfrom(PosixPointer buffer, long length, int flags) throws PosixException {
 		// TODO: use the flags
 		ByteBuffer buf = ByteBuffer.allocate((int) length);

@@ -5,8 +5,10 @@ import static com.everyware.posix.api.io.Stat.S_IRUSR;
 import static com.everyware.posix.api.io.Stat.S_IWGRP;
 import static com.everyware.posix.api.io.Stat.S_IWUSR;
 
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
+import java.net.UnknownHostException;
 import java.nio.channels.SelectableChannel;
 
 import com.everyware.posix.api.Errno;
@@ -67,6 +69,9 @@ public abstract class NetworkStream extends Stream {
 
 	public abstract long recv(PosixPointer buffer, long length, int flags) throws PosixException;
 
+	public abstract long sendto(PosixPointer message, long length, int flags, PosixPointer dest_addr, int dest_len)
+			throws PosixException;
+
 	public abstract RecvResult recvfrom(PosixPointer buffer, long length, int flags) throws PosixException;
 
 	public abstract long sendmsg(Msghdr message, int flags) throws PosixException;
@@ -104,6 +109,30 @@ public abstract class NetworkStream extends Stream {
 			return sin;
 		} else {
 			return null;
+		}
+	}
+
+	protected SocketAddress getSocketAddress(PosixPointer address) throws PosixException {
+		Sockaddr saddr = new Sockaddr();
+		saddr.read(address);
+		if(saddr.sa_family == Socket.AF_INET) {
+			SockaddrIn addr = new SockaddrIn();
+			addr.read(address);
+			if(addr.sa_family != Socket.AF_INET) {
+				throw new PosixException(Errno.EAFNOSUPPORT);
+			}
+			byte[] remoteAddrBytes = new byte[4];
+			Endianess.set32bitBE(remoteAddrBytes, 0, addr.sin_addr);
+			InetAddress remoteAddr = null;
+			try {
+				remoteAddr = InetAddress.getByAddress(remoteAddrBytes);
+			} catch(UnknownHostException e) {
+				throw new PosixException(Errno.EADDRNOTAVAIL);
+			}
+			int port = addr.sin_port;
+			return new InetSocketAddress(remoteAddr, port);
+		} else {
+			throw new PosixException(Errno.EAFNOSUPPORT);
 		}
 	}
 }
