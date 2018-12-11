@@ -28,7 +28,11 @@ public abstract class Stream {
 
 	public int read(PosixPointer buf, int length) throws PosixException {
 		if(buf == null) {
-			throw new PosixException(Errno.EFAULT);
+			if(length == 0) {
+				return 0;
+			} else {
+				throw new PosixException(Errno.EFAULT);
+			}
 		}
 
 		if(buf.hasMemory(length)) {
@@ -47,7 +51,11 @@ public abstract class Stream {
 
 	public int write(PosixPointer buf, int length) throws PosixException {
 		if(buf == null) {
-			throw new PosixException(Errno.EFAULT);
+			if(length == 0) {
+				return 0;
+			} else {
+				throw new PosixException(Errno.EFAULT);
+			}
 		}
 
 		if(buf.hasMemory(length)) {
@@ -65,7 +73,11 @@ public abstract class Stream {
 
 	public int pread(PosixPointer buf, int length, long offset) throws PosixException {
 		if(buf == null) {
-			throw new PosixException(Errno.EFAULT);
+			if(length == 0) {
+				return 0;
+			} else {
+				throw new PosixException(Errno.EFAULT);
+			}
 		}
 
 		if(buf.hasMemory(length)) {
@@ -84,7 +96,11 @@ public abstract class Stream {
 
 	public int pwrite(PosixPointer buf, int length, long offset) throws PosixException {
 		if(buf == null) {
-			throw new PosixException(Errno.EFAULT);
+			if(length == 0) {
+				return 0;
+			} else {
+				throw new PosixException(Errno.EFAULT);
+			}
 		}
 
 		if(buf.hasMemory(length)) {
