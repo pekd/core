@@ -3,21 +3,21 @@ package com.everyware.posix.api;
 public interface PosixPointer {
 	PosixPointer add(int off);
 
-	byte getI8();
+	byte getI8() throws MemoryFaultException;
 
-	short getI16();
+	short getI16() throws MemoryFaultException;
 
-	int getI32();
+	int getI32() throws MemoryFaultException;
 
-	long getI64();
+	long getI64() throws MemoryFaultException;
 
-	void setI8(byte val);
+	void setI8(byte val) throws MemoryFaultException;
 
-	void setI16(short val);
+	void setI16(short val) throws MemoryFaultException;
 
-	void setI32(int val);
+	void setI32(int val) throws MemoryFaultException;
 
-	void setI64(long val);
+	void setI64(long val) throws MemoryFaultException;
 
 	default long getAddress() {
 		throw new AssertionError("not implemented");

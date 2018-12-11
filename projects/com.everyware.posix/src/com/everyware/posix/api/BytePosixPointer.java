@@ -28,42 +28,74 @@ public class BytePosixPointer implements PosixPointer {
 
 	@Override
 	public byte getI8() {
-		return memory[offset];
+		try {
+			return memory[offset];
+		} catch(IndexOutOfBoundsException e) {
+			throw new MemoryFaultException(e);
+		}
 	}
 
 	@Override
 	public void setI8(byte val) {
-		memory[offset] = val;
+		try {
+			memory[offset] = val;
+		} catch(IndexOutOfBoundsException e) {
+			throw new MemoryFaultException(e);
+		}
 	}
 
 	@Override
 	public short getI16() {
-		return Endianess.get16bitBE(memory, offset);
+		try {
+			return Endianess.get16bitBE(memory, offset);
+		} catch(IndexOutOfBoundsException e) {
+			throw new MemoryFaultException(e);
+		}
 	}
 
 	@Override
 	public void setI16(short val) {
-		Endianess.set16bitBE(memory, offset, val);
+		try {
+			Endianess.set16bitBE(memory, offset, val);
+		} catch(IndexOutOfBoundsException e) {
+			throw new MemoryFaultException(e);
+		}
 	}
 
 	@Override
 	public int getI32() {
-		return Endianess.get32bitBE(memory, offset);
+		try {
+			return Endianess.get32bitBE(memory, offset);
+		} catch(IndexOutOfBoundsException e) {
+			throw new MemoryFaultException(e);
+		}
 	}
 
 	@Override
 	public void setI32(int val) {
-		Endianess.set32bitBE(memory, offset, val);
+		try {
+			Endianess.set32bitBE(memory, offset, val);
+		} catch(IndexOutOfBoundsException e) {
+			throw new MemoryFaultException(e);
+		}
 	}
 
 	@Override
 	public long getI64() {
-		return Endianess.get64bitBE(memory, offset);
+		try {
+			return Endianess.get64bitBE(memory, offset);
+		} catch(IndexOutOfBoundsException e) {
+			throw new MemoryFaultException(e);
+		}
 	}
 
 	@Override
 	public void setI64(long val) {
-		Endianess.set64bitBE(memory, offset, val);
+		try {
+			Endianess.set64bitBE(memory, offset, val);
+		} catch(IndexOutOfBoundsException e) {
+			throw new MemoryFaultException(e);
+		}
 	}
 
 	@Override

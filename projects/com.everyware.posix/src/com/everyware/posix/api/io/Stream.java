@@ -1,6 +1,7 @@
 package com.everyware.posix.api.io;
 
 import com.everyware.posix.api.Errno;
+import com.everyware.posix.api.MemoryFaultException;
 import com.everyware.posix.api.PosixException;
 import com.everyware.posix.api.PosixPointer;
 import com.everyware.posix.api.io.tty.Kd;
@@ -63,9 +64,20 @@ public abstract class Stream {
 		} else {
 			byte[] b = new byte[length];
 			PosixPointer p = buf;
-			for(int i = 0; i < length; i++) {
-				b[i] = p.getI8();
-				p = p.add(1);
+			int i = 0;
+			try {
+				for(i = 0; i < length; i++) {
+					b[i] = p.getI8();
+					p = p.add(1);
+				}
+			} catch(MemoryFaultException e) {
+				// if a fault happens, stop writing there
+				// only throw exception if no data could be read
+				if(i == 0) {
+					throw new PosixException(Errno.EFAULT);
+				} else {
+					return write(b, 0, i);
+				}
 			}
 			return write(b, 0, length);
 		}
