@@ -34,6 +34,13 @@ public class TTYStream extends PipeStream {
 		statusFlags = Fcntl.O_WRONLY;
 	}
 
+	public TTYStream(InputStream in, OutputStream out) {
+		super(in, out);
+		termios = Termios.getDefaultTerminal();
+		winsize = new Winsize();
+		statusFlags = Fcntl.O_RDWR;
+	}
+
 	@Override
 	public void stat(Stat buf) throws PosixException {
 		super.stat(buf);

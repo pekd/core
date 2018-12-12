@@ -107,6 +107,10 @@ public class Posix {
 		fds.setStream(filedes, new TTYStream(out));
 	}
 
+	public void setTTY(int filedes, InputStream in, OutputStream out) {
+		fds.setStream(filedes, new TTYStream(in, out));
+	}
+
 	public Stream getStream(int filedes) throws PosixException {
 		return fds.getStream(filedes);
 	}

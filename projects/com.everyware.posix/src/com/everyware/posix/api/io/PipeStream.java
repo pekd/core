@@ -27,6 +27,11 @@ public class PipeStream extends Stream {
 		this.out = out;
 	}
 
+	protected PipeStream(InputStream in, OutputStream out) {
+		this.in = in;
+		this.out = out;
+	}
+
 	@Override
 	public int read(byte[] buf, int offset, int length) throws PosixException {
 		if(in != null) {
