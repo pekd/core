@@ -1,9 +1,4 @@
-package com.everyware.posix.api.io;
-
-import com.everyware.posix.api.Errno;
-import com.everyware.posix.api.PosixException;
-import com.everyware.posix.api.Timespec;
-import com.everyware.posix.api.Timeval;
+package com.everyware.posix.api;
 
 public class Clock {
 	// @formatter:off

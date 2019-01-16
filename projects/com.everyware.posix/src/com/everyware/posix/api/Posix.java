@@ -11,7 +11,6 @@ import java.nio.channels.ServerSocketChannel;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.everyware.posix.api.io.Clock;
 import com.everyware.posix.api.io.DirectoryStream;
 import com.everyware.posix.api.io.Fcntl;
 import com.everyware.posix.api.io.FileDescriptor;
