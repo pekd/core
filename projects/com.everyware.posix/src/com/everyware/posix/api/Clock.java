@@ -16,6 +16,8 @@ public class Clock {
 	public static final int CLOCK_TAI                     = 11;
 	// @formatter:on
 
+	private long startTime = System.nanoTime();
+
 	private static final String[] CLOCK_NAMES = {
 			/* 00 */ "CLOCK_REALTIME",
 			/* 01 */ "CLOCK_MONOTONIC",
@@ -45,6 +47,8 @@ public class Clock {
 		case CLOCK_REALTIME_COARSE:
 		case CLOCK_MONOTONIC:
 		case CLOCK_MONOTONIC_COARSE:
+		case CLOCK_PROCESS_CPUTIME_ID:
+		case CLOCK_THREAD_CPUTIME_ID:
 			if(tp != null) {
 				tp.tv_sec = 0;
 				tp.tv_nsec = 1;
@@ -68,6 +72,13 @@ public class Clock {
 		case CLOCK_MONOTONIC:
 		case CLOCK_MONOTONIC_COARSE: {
 			long t = System.nanoTime();
+			tp.tv_sec = t / 1000000000L;
+			tp.tv_nsec = (t % 1000000000L);
+			break;
+		}
+		case CLOCK_PROCESS_CPUTIME_ID:
+		case CLOCK_THREAD_CPUTIME_ID: {
+			long t = System.nanoTime() - startTime;
 			tp.tv_sec = t / 1000000000L;
 			tp.tv_nsec = (t % 1000000000L);
 			break;
